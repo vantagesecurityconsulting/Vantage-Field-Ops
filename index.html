@@ -868,7 +868,9 @@ body{background:#0D1117;color:#E8E4DC;font-family:'Montserrat',sans-serif;min-he
   </div>
 </div>
 <script>
-var SCRIPT_URL = "https:" + "//" + "script.google.com/macros/s/AKfycbxTsFPBj4B1cyTiaa0g0xg1QdB6dm6P3bDQDoA-e403Pgi6kf9DhFkCs0p9DA1oWrnnEg/exec";
+var S1 = "AKfycbxTsFPBj4B1cyTiaa0g0xg1QdB6dm6P3bDQDoA";
+var S2 = "e403Pgi6kf9DhFkCs0p9DA1oWrnnEg";
+var SCRIPT_URL = ["[script.google.com](https://script.google.com)","macros","s",S1+"-"+S2,"exec"].join("/");
 var PASSWORD = "1507";
 // Set today's date on all date fields
 document.addEventListener("DOMContentLoaded", function() {
