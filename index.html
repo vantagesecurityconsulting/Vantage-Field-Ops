@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Vantage Field Operations</title>
+<link href="[fonts.googleapis.com](https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap)" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0D1117;color:#E8E4DC;font-family:'Montserrat',sans-serif;min-height:100vh}
+.hidden{display:none!important}
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.login-box{background:#1B2A4A;border:1px solid rgba(201,168,76,0.3);padding:3rem 2.5rem;max-width:400px;width:100%;text-align:center}
+.login-logo{font-size:1.6rem;font-weight:800;letter-spacing:0.2em;color:#C9A84C;margin-bottom:0.5rem}
+.login-tag{font-size:0.65rem;letter-spacing:0.2em;color:rgba(201,168,76,0.6);text-transform:uppercase;font-weight:600;margin-bottom:2rem}
+.login-title{font-size:1rem;font-weight:700;color:#E8E4DC;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1.5rem}
+.login-input{width:100%;padding:1rem;background:transparent;border:1px solid rgba(232,228,220,0.2);border-left:3px solid #C9A84C;color:#E8E4DC;font-family:'Montserrat',sans-serif;font-size:1.2rem;letter-spacing:0.3em;text-align:center;outline:none;margin-bottom:1rem}
+.login-error{color:#E05C3A;font-size:0.8rem;margin-bottom:1rem;font-weight:600;display:none}
+.btn-primary{background:#C9A84C;color:#0D1117;border:none;padding:1rem 2.5rem;font-family:'Montserrat',sans-serif;font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;font-weight:700;transition:all 0.2s;width:100%}
+.btn-primary:hover{background:#D9BC85}
+.btn-secondary{background:transparent;color:rgba(232,228,220,0.5);border:1px solid rgba(232,228,220,0.15);padding:0.75rem 1.5rem;font-family:'Montserrat',sans-serif;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;font-weight:600}
+.btn-secondary:hover{color:#E8E4DC;border-color:rgba(232,228,220,0.35)}
+.btn-danger{background:#E05C3A;color:#FFFFFF;border:none;padding:0.75rem 1.5rem;font-family:'Montserrat',sans-serif;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;font-weight:700;transition:all 0.2s}
+.btn-danger:hover{background:#c94f30}
+/* HEADER */
+.header{border-bottom:1px solid rgba(201,168,76,0.2);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;background:rgba(13,17,23,0.97);position:sticky;top:0;z-index:100}
+.header-logo{font-size:1.2rem;font-weight:800;letter-spacing:0.2em;color:#C9A84C}
+.header-right{display:flex;align-items:center;gap:1rem}
+.header-date{font-size:0.6rem;color:rgba(232,228,220,0.3);letter-spacing:0.1em;text-transform:uppercase}
+/* DASHBOARD */
+.dashboard{padding:2rem 1.5rem;max-width:900px;margin:0 auto}
+.dash-eyebrow{font-size:0.65rem;letter-spacing:0.3em;color:#C9A84C;text-transform:uppercase;font-weight:700;margin-bottom:0.5rem}
+.dash-title{font-size:2rem;font-weight:800;color:#E8E4DC;text-transform:uppercase;margin-bottom:0.5rem}
+.dash-sub{font-size:0.85rem;color:rgba(232,228,220,0.4);margin-bottom:2.5rem}
+/* INCIDENT BUTTON - BIG AND RED */
+.incident-btn{width:100%;background:linear-gradient(135deg,#E05C3A,#c94f30);border:none;padding:2rem;display:flex;align-items:center;gap:1.5rem;cursor:pointer;transition:all 0.2s;margin-bottom:2rem;position:relative;overflow:hidden}
+.incident-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(224,92,58,0.4)}
+.incident-btn-icon{font-size:2.5rem;flex-shrink:0}
+.incident-btn-text{text-align:left}
+.incident-btn-label{font-size:1.4rem;font-weight:800;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.05em;display:block}
+.incident-btn-sub{font-size:0.75rem;color:rgba(255,255,255,0.7);letter-spacing:0.1em;text-transform:uppercase;margin-top:0.25rem;display:block}
+.incident-pulse{position:absolute;right:1.5rem;width:16px;height:16px;background:#FFFFFF;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,0.7)}70%{box-shadow:0 0 0 10px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+/* SECTION GRID */
+.section-label{font-size:0.65rem;letter-spacing:0.2em;color:rgba(232,228,220,0.4);text-transform:uppercase;font-weight:700;margin-bottom:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}
+.grid-btn{background:#1B2A4A;border:1px solid rgba(201,168,76,0.2);padding:1.5rem;cursor:pointer;transition:all 0.2s;text-align:left;display:flex;flex-direction:column;gap:0.5rem}
+.grid-btn:hover{border-color:#C9A84C;transform:translateY(-3px);background:rgba(27,42,74,0.8)}
+.grid-btn-icon{font-size:1.5rem}
+.grid-btn-label{font-size:0.85rem;font-weight:700;color:#E8E4DC;text-transform:uppercase;letter-spacing:0.05em}
+.grid-btn-sub{font-size:0.7rem;color:rgba(232,228,220,0.4);letter-spacing:0.05em}
+/* FORMS */
+.form-wrap{padding:2rem 1.5rem;max-width:800px;margin:0 auto}
+.form-header{margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(232,228,220,0.08)}
+.form-eyebrow{font-size:0.65rem;letter-spacing:0.25em;color:rgba(201,168,76,0.6);text-transform:uppercase;font-weight:600;margin-bottom:0.5rem}
+.form-title{font-size:2rem;font-weight:800;color:#E8E4DC;text-transform:uppercase}
+.form-body{display:flex;flex-direction:column;gap:1.25rem}
+.form-row{display:flex;flex-wrap:wrap;gap:1rem}
+.form-group{display:flex;flex-direction:column;gap:0.4rem;flex:1;min-width:200px}
+.form-group.full{flex:100%}
+.form-label{font-size:0.65rem;font-weight:700;color:#C9A84C;text-transform:uppercase;letter-spacing:0.15em}
+.form-input{padding:0.75rem 1rem;background:transparent;border:1px solid rgba(232,228,220,0.15);border-left:3px solid #C9A84C;color:#E8E4DC;font-family:'Montserrat',sans-serif;font-size:0.9rem;outline:none;width:100%}
+.form-input:focus{border-color:rgba(232,228,220,0.3)}
+.form-select{padding:0.75rem 1rem;background:#0D1117;border:1px solid rgba(232,228,220,0.15);border-left:3px solid #C9A84C;color:#E8E4DC;font-family:'Montserrat',sans-serif;font-size:0.9rem;outline:none;width:100%}
+.form-textarea{padding:0.75rem 1rem;background:transparent;border:1px solid rgba(232,228,220,0.15);border-left:3px solid #C9A84C;color:#E8E4DC;font-family:'Montserrat',sans-serif;font-size:0.9rem;outline:none;width:100%;resize:vertical;min-height:120px}
+.form-section-divider{border:none;border-top:1px solid rgba(232,228,220,0.08);margin:0.5rem 0}
+.form-section-title{font-size:0.75rem;font-weight:700;color:#C9A84C;text-transform:uppercase;letter-spacing:0.15em;margin-top:0.5rem}
+.form-actions{display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap}
+.success-msg{background:rgba(201,168,76,0.1);border:1px solid #C9A84C;padding:1.5rem;text-align:center;display:none}
+.success-msg p:first-child{font-weight:700;color:#C9A84C;font-size:1rem;margin-bottom:0.5rem}
+.success-msg p:last-child{font-size:0.85rem;color:rgba(232,228,220,0.6)}
+/* CHECKLIST */
+.checklist-group{margin-bottom:1.5rem}
+.checklist-group-title{font-size:0.7rem;font-weight:700;color:#C9A84C;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.75rem}
+.checklist-item{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border:1px solid rgba(232,228,220,0.07);margin-bottom:0.5rem;cursor:pointer;transition:all 0.15s;background:rgba(232,228,220,0.02)}
+.checklist-item:hover{border-color:rgba(201,168,76,0.3)}
+.checklist-item.checked{background:rgba(201,168,76,0.08);border-color:rgba(201,168,76,0.3)}
+.checklist-box{width:20px;height:20px;border:2px solid rgba(232,228,220,0.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.7rem;transition:all 0.15s}
+.checklist-item.checked .checklist-box{background:#C9A84C;border-color:#C9A84C;color:#0D1117}
+.checklist-text{font-size:0.85rem;color:rgba(232,228,220,0.7)}
+.checklist-item.checked .checklist-text{color:rgba(232,228,220,0.4);text-decoration:line-through}
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr 1fr}
+  .dashboard,.form-wrap{padding:1.5rem 1rem}
+  .form-group{min-width:100%}
+}
+</style>
+</head>
+<body>
+<!-- LOGIN PAGE -->
+<div id="page-login" class="login-wrap">
+  <div class="login-box">
+    <div class="login-logo">VANTAGE</div>
+    <div class="login-tag">Field Operations Platform</div>
+    <div class="login-title">Enter Access Code</div>
+    <input class="login-input" type="password" id="pin-input" maxlength="4" placeholder="••••">
+    <div class="login-error" id="login-error">Incorrect code. Try again.</div>
+    <button class="btn-primary" onclick="checkLogin()">Access Platform</button>
+  </div>
+</div>
+<!-- MAIN APP -->
+<div id="page-app" class="hidden">
+  <header class="header">
+    <div class="header-logo">VANTAGE</div>
+    <div class="header-right">
+      <div class="header-date" id="header-date"></div>
+      <button class="btn-secondary" onclick="logout()">Lock</button>
+    </div>
+  </header>
+  <!-- DASHBOARD -->
+  <div id="view-dashboard">
+    <div class="dashboard">
+      <div class="dash-eyebrow">&#9672; Vantage Security Consulting</div>
+      <div class="dash-title">Field Operations</div>
+      <div class="dash-sub">Select an action to begin</div>
+      <!-- INCIDENT BUTTON -->
+      <button class="incident-btn" onclick="showView('view-incident')">
+        <div class="incident-btn-icon">🚨</div>
+        <div class="incident-btn-text">
+          <span class="incident-btn-label">New Incident Report</span>
+          <span class="incident-btn-sub">Tap immediately when an incident occurs</span>
+        </div>
+        <div class="incident-pulse"></div>
+      </button>
+      <!-- ON-SITE OPERATIONS -->
+      <div class="section-label">On-Site Operations</div>
+      <div class="grid">
+        <button class="grid-btn" onclick="showView('view-pre-checklist')">
+          <div class="grid-btn-icon">✅</div>
+          <div class="grid-btn-label">Pre-Event Checklist</div>
+          <div class="grid-btn-sub">Before gates open</div>
+        </button>
+        <button class="grid-btn" onclick="showView('view-post-checklist')">
+          <div class="grid-btn-icon">☑️</div>
+          <div class="grid-btn-label">Post-Event Checklist</div>
+          <div class="grid-btn-sub">End of event wrap-up</div>
+        </button>
+        <button class="grid-btn" onclick="showView('view-staff-signin')">
+          <div class="grid-btn-icon">👥</div>
+          <div class="grid-btn-label">Staff Sign-In</div>
+          <div class="grid-btn-sub">Officer log</div>
+        </button>
+        <button class="grid-btn" onclick="showView('view-timeline')">
+          <div class="grid-btn-icon">📋</div>
+          <div class="grid-btn-label">Event Timeline</div>
+          <div class="grid-btn-sub">Log events as they happen</div>
+        </button>
+      </div>
+      <!-- DOCUMENTS -->
+      <div class="section-label">Documents and Reports</div>
+      <div class="grid">
+        <button class="grid-btn" onclick="showView('view-risk-assessment')">
+          <div class="grid-btn-icon">🔍</div>
+          <div class="grid-btn-label">Risk Assessment</div>
+          <div class="grid-btn-sub">New assessment</div>
+        </button>
+        <button class="grid-btn" onclick="showView('view-debrief')">
+          <div class="grid-btn-icon">📝</div>
+          <div class="grid-btn-label">Post-Event Debrief</div>
+          <div class="grid-btn-sub">After action report</div>
+        </button>
+        <button class="grid-btn" onclick="showView('view-client')">
+          <div class="grid-btn-icon">👤</div>
+          <div class="grid-btn-label">New Client</div>
+          <div class="grid-btn-sub">Add to pipeline</div>
+        </button>
+        <button class="grid-btn" onclick="showView('view-contact-log')">
+          <div class="grid-btn-icon">📞</div>
+          <div class="grid-btn-label">Contact Log</div>
+          <div class="grid-btn-sub">Log a call or meeting</div>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- INCIDENT REPORT -->
+  <div id="view-incident" class="hidden">
+    <div class="form-wrap">
+      <div class="form-header">
+        <div class="form-eyebrow">🚨 On-Site Operations</div>
+        <div class="form-title" style="color:#E05C3A">Incident Report</div>
+      </div>
+      <div class="form-body" id="incident-form-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Job / Event Number</label>
+            <input class="form-input" type="text" id="inc-job" placeholder="VSC-2026-001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input class="form-input" type="date" id="inc-date">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Time of Incident</label>
+            <input class="form-input" type="time" id="inc-time">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Event / Venue Name</label>
+            <input class="form-input" type="text" id="inc-event" placeholder="Event or venue name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location Within Venue</label>
+            <input class="form-input" type="text" id="inc-location" placeholder="e.g. Main entrance, Stage left">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Incident Type</label>
+            <select class="form-select" id="inc-type">
+              <option value="">Select type...</option>
+              <option>Medical Emergency</option>
+              <option>Altercation / Fight</option>
+              <option>Ejection</option>
+              <option>Suspicious Activity</option>
+              <option>Theft or Property Damage</option>
+              <option>Unauthorized Access</option>
+              <option>Drug / Alcohol Related</option>
+              <option>Crowd Safety Issue</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Severity</label>
+            <select class="form-select" id="inc-severity">
+              <option value="">Select severity...</option>
+              <option>Minor</option>
+              <option>Moderate</option>
+              <option>Major</option>
+              <option>Critical</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Reported By (Officer Name and Post)</label>
+            <input class="form-input" type="text" id="inc-reported-by" placeholder="Officer name and post number">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Persons Involved</label>
+            <input class="form-input" type="text" id="inc-persons" placeholder="Names or descriptions if known">
+          </div>
+        </div>
+        <hr class="form-section-divider">
+        <div class="form-section-title">Description and Response</div>
+        <div class="form-group full">
+          <label class="form-label">Description of Incident</label>
+          <textarea class="form-textarea" id="inc-description" placeholder="Detailed factual description of what occurred — who, what, where, when, how..." style="min-height:150px"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Actions Taken</label>
+          <textarea class="form-textarea" id="inc-actions" placeholder="Step by step account of actions taken by security personnel..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Outcome</label>
+          <textarea class="form-textarea" id="inc-outcome" placeholder="How was the incident resolved?"></textarea>
+        </div>
+        <hr class="form-section-divider">
+        <div class="form-section-title">Authorities and Medical</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Police Called?</label>
+            <select class="form-select" id="inc-police">
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Police Report Number</label>
+            <input class="form-input" type="text" id="inc-police-report" placeholder="If applicable">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Medical Required?</label>
+            <select class="form-select" id="inc-medical">
+              <option>No</option>
+              <option>Yes — First Aid On-Site</option>
+              <option>Yes — Ambulance Called</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Patron Ejected?</label>
+            <select class="form-select" id="inc-ejected">
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Follow-Up Required</label>
+          <textarea class="form-textarea" id="inc-followup" placeholder="Any follow-up actions required after the event..." style="min-height:80px"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-danger" onclick="submitForm('incident')">Submit Incident Report</button>
+          <button class="btn-secondary" onclick="showDashboard()">Cancel</button>
+        </div>
+        <div class="success-msg" id="incident-success">
+          <p>✓ Incident Report Saved</p>
+          <p>Logged to Google Sheets successfully.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- PRE EVENT CHECKLIST -->
+  <div id="view-pre-checklist" class="hidden">
+    <div class="form-wrap">
+      <div class="form-header">
+        <div class="form-eyebrow">✅ On-Site Operations</div>
+        <div class="form-title">Pre-Event Checklist</div>
+      </div>
+      <div class="form-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Job / Event Number</label>
+            <input class="form-input" type="text" id="pre-job" placeholder="VSC-2026-001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Event Name</label>
+            <input class="form-input" type="text" id="pre-event" placeholder="Event name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input class="form-input" type="date" id="pre-date">
+          </div>
+        </div>
+        <div class="checklist-group">
+          <div class="checklist-group-title">Staffing</div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">All security staff on-site and signed in</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Security briefing completed</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">All posts confirmed staffed</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Radio check completed — all channels clear</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Staff credentials and identification verified</div></div>
+        </div>
+        <div class="checklist-group">
+          <div class="checklist-group-title">Venue</div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Full venue walk-through completed</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">All entry and exit points confirmed operational</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Access control credentials and wristbands on-site</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Prohibited items signage posted at all entry points</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Barricades and crowd control barriers in place</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Emergency exits confirmed clear and accessible</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Assembly point confirmed and communicated</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">CCTV systems operational and monitored</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Medical station set up and staffed</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">First aid kits confirmed at all posts</div></div>
+        </div>
+        <div class="checklist-group">
+          <div class="checklist-group-title">Documentation</div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Security plan distributed to all supervisors</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Incident log on-site and accessible</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Client contact confirmed and reachable</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Police and emergency services notified if required</div></div>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Notes</label>
+          <textarea class="form-textarea" id="pre-notes" placeholder="Any pre-event observations or issues..." style="min-height:80px"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="submitChecklist('pre')">Save Checklist</button>
+          <button class="btn-secondary" onclick="showDashboard()">Back</button>
+        </div>
+        <div class="success-msg" id="pre-success">
+          <p>✓ Pre-Event Checklist Saved</p>
+          <p>Logged to Google Sheets successfully.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- POST EVENT CHECKLIST -->
+  <div id="view-post-checklist" class="hidden">
+    <div class="form-wrap">
+      <div class="form-header">
+        <div class="form-eyebrow">☑️ On-Site Operations</div>
+        <div class="form-title">Post-Event Checklist</div>
+      </div>
+      <div class="form-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Job / Event Number</label>
+            <input class="form-input" type="text" id="post-job" placeholder="VSC-2026-001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Event Name</label>
+            <input class="form-input" type="text" id="post-event" placeholder="Event name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input class="form-input" type="date" id="post-date">
+          </div>
+        </div>
+        <div class="checklist-group">
+          <div class="checklist-group-title">Venue Clearance</div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Full venue sweep completed — all areas clear of patrons</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">All exits confirmed clear</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">No patrons remaining inside venue</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">All vendors and contractors have vacated</div></div>
+        </div>
+        <div class="checklist-group">
+          <div class="checklist-group-title">Security Wrap-Up</div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">All security staff signed out</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">All radios collected and returned</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">All access credentials and wristbands collected</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Incident log reviewed and complete</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">All barriers and equipment secured or returned</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Lost and found items logged and handed to venue</div></div>
+        </div>
+        <div class="checklist-group">
+          <div class="checklist-group-title">Handover</div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Venue formally handed back to venue management</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Client event manager notified of clearance</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Outstanding issues communicated to client</div></div>
+          <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-box"></div><div class="checklist-text">Post-event debrief scheduled</div></div>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Post-Event Notes</label>
+          <textarea class="form-textarea" id="post-notes" placeholder="Any observations, issues, or recommendations..." style="min-height:80px"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="submitChecklist('post')">Save Checklist</button>
+          <button class="btn-secondary" onclick="showDashboard()">Back</button>
+        </div>
+        <div class="success-msg" id="post-success">
+          <p>✓ Post-Event Checklist Saved</p>
+          <p>Logged to Google Sheets successfully.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- STAFF SIGN IN -->
+  <div id="view-staff-signin" class="hidden">
+    <div class="form-wrap">
+      <div class="form-header">
+        <div class="form-eyebrow">👥 On-Site Operations</div>
+        <div class="form-title">Staff Sign-In</div>
+      </div>
+      <div class="form-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Job / Event Number</label>
+            <input class="form-input" type="text" id="staff-job" placeholder="VSC-2026-001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Event Name</label>
+            <input class="form-input" type="text" id="staff-event" placeholder="Event name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input class="form-input" type="date" id="staff-date">
+          </div>
+        </div>
+        <hr class="form-section-divider">
+        <div class="form-section-title">Officer Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Officer Name</label>
+            <input class="form-input" type="text" id="staff-name" placeholder="Full name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Company</label>
+            <input class="form-input" type="text" id="staff-company" placeholder="Guard company name">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Role</label>
+            <select class="form-select" id="staff-role">
+              <option value="">Select role...</option>
+              <option>Security Supervisor</option>
+              <option>General Security Officer</option>
+              <option>Access Control Officer</option>
+              <option>VIP / Backstage Security</option>
+              <option>Roving Patrol</option>
+              <option>CCTV Operator</option>
+              <option>Medical / First Aid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Post Number</label>
+            <input class="form-input" type="text" id="staff-post" placeholder="Post #">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Sign-In Time</label>
+            <input class="form-input" type="time" id="staff-signin-time">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sign-Out Time</label>
+            <input class="form-input" type="time" id="staff-signout-time">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="submitForm('staff')">Log Officer</button>
+          <button class="btn-secondary" onclick="showDashboard()">Back</button>
+        </div>
+        <div class="success-msg" id="staff-success">
+          <p>✓ Officer Logged</p>
+          <p>Saved to Google Sheets successfully.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- EVENT TIMELINE -->
+  <div id="view-timeline" class="hidden">
+    <div class="form-wrap">
+      <div class="form-header">
+        <div class="form-eyebrow">📋 On-Site Operations</div>
+        <div class="form-title">Event Timeline Log</div>
+      </div>
+      <div class="form-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Job / Event Number</label>
+            <input class="form-input" type="text" id="tl-job" placeholder="VSC-2026-001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Event Name</label>
+            <input class="form-input" type="text" id="tl-event" placeholder="Event name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input class="form-input" type="date" id="tl-date">
+          </div>
+        </div>
+        <hr class="form-section-divider">
+        <div class="form-section-title">Log Entry</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Time</label>
+            <input class="form-input" type="time" id="tl-time">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <input class="form-input" type="text" id="tl-location" placeholder="Location within venue">
+          </div>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Event / Observation</label>
+          <textarea class="form-textarea" id="tl-observation" placeholder="What happened or was observed..." style="min-height:100px"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Action Taken</label>
+          <textarea class="form-textarea" id="tl-action" placeholder="What action was taken..." style="min-height:80px"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="submitForm('timeline')">Log Entry</button>
+          <button class="btn-secondary" onclick="showDashboard()">Back</button>
+        </div>
+        <div class="success-msg" id="timeline-success">
+          <p>✓ Timeline Entry Logged</p>
+          <p>Saved to Google Sheets successfully.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- RISK ASSESSMENT -->
+  <div id="view-risk-assessment" class="hidden">
+    <div class="form-wrap">
+      <div class="form-header">
+        <div class="form-eyebrow">🔍 Documents</div>
+        <div class="form-title">Risk Assessment</div>
+      </div>
+      <div class="form-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Report Number</label>
+            <input class="form-input" type="text" id="ra-number" placeholder="VSC-RA-2026-001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Client / Organization</label>
+            <input class="form-input" type="text" id="ra-client" placeholder="Organization name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Assessment Date</label>
+            <input class="form-input" type="date" id="ra-date">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Event / Venue Name</label>
+            <input class="form-input" type="text" id="ra-event" placeholder="Event or venue">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Expected Attendance</label>
+            <input class="form-input" type="text" id="ra-attendance" placeholder="Number of attendees">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Overall Risk Rating</label>
+            <select class="form-select" id="ra-rating">
+              <option value="">Select rating...</option>
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+              <option>Critical</option>
+            </select>
+          </div>
+        </div>
+        <hr class="form-section-divider">
+        <div class="form-section-title">Key Findings</div>
+        <div class="form-group full">
+          <label class="form-label">Access Control Findings</label>
+          <textarea class="form-textarea" id="ra-access" placeholder="Observations regarding access control..." style="min-height:80px"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Crowd Flow Findings</label>
+          <textarea class="form-textarea" id="ra-crowd" placeholder="Observations regarding crowd flow and capacity..." style="min-height:80px"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Emergency Response Findings</label>
+          <textarea class="form-textarea" id="ra-emergency" placeholder="Observations regarding emergency response readiness..." style="min-height:80px"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Staffing Findings</label>
+          <textarea class="form-textarea" id="ra-staffing" placeholder="Observations regarding security staffing..." style="min-height:80px"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Key Recommendations</label>
+          <textarea class="form-textarea" id="ra-recommendations" placeholder="Priority recommendations based on findings..." style="min-height:120px"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Additional Notes</label>
+          <textarea class="form-textarea" id="ra-notes" placeholder="Any additional observations or context..." style="min-height:80px"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="submitForm('riskassessment')">Save Assessment</button>
+          <button class="btn-secondary" onclick="showDashboard()">Back</button>
+        </div>
+        <div class="success-msg" id="riskassessment-success">
+          <p>✓ Risk Assessment Saved</p>
+          <p>Logged to Google Sheets successfully.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- POST EVENT DEBRIEF -->
+  <div id="view-debrief" class="hidden">
+    <div class="form-wrap">
+      <div class="form-header">
+        <div class="form-eyebrow">📝 Documents</div>
+        <div class="form-title">Post-Event Debrief</div>
+      </div>
+      <div class="form-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Report Number</label>
+            <input class="form-input" type="text" id="deb-number" placeholder="VSC-PED-2026-001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Event Name</label>
+            <input class="form-input" type="text" id="deb-event" placeholder="Event name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Event Date</label>
+            <input class="form-input" type="date" id="deb-date">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Expected Attendance</label>
+            <input class="form-input" type="text" id="deb-expected" placeholder="Number">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Actual Attendance</label>
+            <input class="form-input" type="text" id="deb-actual" placeholder="Number">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Overall Assessment</label>
+            <select class="form-select" id="deb-rating">
+              <option value="">Select...</option>
+              <option>Excellent — No Issues</option>
+              <option>Good — Minor Issues Resolved</option>
+              <option>Satisfactory — Areas for Improvement</option>
+              <option>Needs Improvement</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Total Incidents</label>
+            <input class="form-input" type="number" id="deb-incidents" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ejections</label>
+            <input class="form-input" type="number" id="deb-ejections" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Police Called</label>
+            <select class="form-select" id="deb-police">
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+        </div>
+        <hr class="form-section-divider">
+        <div class="form-section-title">Summary</div>
+        <div class="form-group full">
+          <label class="form-label">What Went Well</label>
+          <textarea class="form-textarea" id="deb-well" placeholder="Specific positive observations..." style="min-height:100px"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Areas for Improvement</label>
+          <textarea class="form-textarea" id="deb-improve" placeholder="What could have been done better..." style="min-height:100px"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Recommendations for Future Events</label>
+          <textarea class="form-textarea" id="deb-recommendations" placeholder="Specific recommendations..." style="min-height:100px"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Consultant Notes</label>
+          <textarea class="form-textarea" id="deb-notes" placeholder="Overall summary and personal observations..." style="min-height:100px"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="submitForm('debrief')">Save Debrief</button>
+          <button class="btn-secondary" onclick="showDashboard()">Back</button>
+        </div>
+        <div class="success-msg" id="debrief-success">
+          <p>✓ Post-Event Debrief Saved</p>
+          <p>Logged to Google Sheets successfully.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- NEW CLIENT -->
+  <div id="view-client" class="hidden">
+    <div class="form-wrap">
+      <div class="form-header">
+        <div class="form-eyebrow">👤 Client Management</div>
+        <div class="form-title">New Client</div>
+      </div>
+      <div class="form-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Client Name</label>
+            <input class="form-input" type="text" id="cl-name" placeholder="Full name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Organization</label>
+            <input class="form-input" type="text" id="cl-org" placeholder="Organization name">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" id="cl-email" placeholder="email@example.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input class="form-input" type="tel" id="cl-phone" placeholder="(902) 555-0100">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Source</label>
+            <select class="form-select" id="cl-source">
+              <option value="">Select source...</option>
+              <option>Website</option>
+              <option>Risk Assessment Tool</option>
+              <option>Referral</option>
+              <option>Cold Outreach</option>
+              <option>LinkedIn</option>
+              <option>Event Industry Contact</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Pipeline Stage</label>
+            <select class="form-select" id="cl-stage">
+              <option>Lead</option>
+              <option>Qualified</option>
+              <option>Proposal Sent</option>
+              <option>Contract Signed</option>
+              <option>Active</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estimated Value</label>
+            <input class="form-input" type="text" id="cl-value" placeholder="$0.00">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Event / Project Type</label>
+            <input class="form-input" type="text" id="cl-type" placeholder="Festival, venue audit, etc.">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Event Date</label>
+            <input class="form-input" type="date" id="cl-event-date">
+          </div>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Next Action</label>
+          <input class="form-input" type="text" id="cl-next-action" placeholder="What needs to happen next...">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Notes</label>
+          <textarea class="form-textarea" id="cl-notes" placeholder="Any additional notes about this client..." style="min-height:80px"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="submitForm('client')">Save Client</button>
+          <button class="btn-secondary" onclick="showDashboard()">Back</button>
+        </div>
+        <div class="success-msg" id="client-success">
+          <p>✓ Client Saved</p>
+          <p>Added to Google Sheets pipeline.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- CONTACT LOG -->
+  <div id="view-contact-log" class="hidden">
+    <div class="form-wrap">
+      <div class="form-header">
+        <div class="form-eyebrow">📞 Client Management</div>
+        <div class="form-title">Contact Log</div>
+      </div>
+      <div class="form-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Client / Organization</label>
+            <input class="form-input" type="text" id="con-client" placeholder="Who did you contact?">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input class="form-input" type="date" id="con-date">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Time</label>
+            <input class="form-input" type="time" id="con-time">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Contact Method</label>
+            <select class="form-select" id="con-method">
+              <option>Phone Call</option>
+              <option>Email</option>
+              <option>In Person Meeting</option>
+              <option>Text Message</option>
+              <option>LinkedIn</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Name</label>
+            <input class="form-input" type="text" id="con-name" placeholder="Person you spoke with">
+          </div>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Summary of Conversation</label>
+          <textarea class="form-textarea" id="con-summary" placeholder="What was discussed..." style="min-height:100px"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Next Action</label>
+          <input class="form-input" type="text" id="con-next" placeholder="What needs to happen next and when...">
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="submitForm('contactlog')">Save Log</button>
+          <button class="btn-secondary" onclick="showDashboard()">Back</button>
+        </div>
+        <div class="success-msg" id="contactlog-success">
+          <p>✓ Contact Logged</p>
+          <p>Saved to Google Sheets successfully.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+var SCRIPT_URL = "[script.google.com](https://script.google.com/macros/s/AKfycbxTsFPBj4B1cyTiaa0g0xg1QdB6dm6P3bDQDoA-e403Pgi6kf9DhFkCs0p9DA1oWrnnEg/exec)";
+var PASSWORD = "1507";
+// Set today's date on all date fields
+document.addEventListener("DOMContentLoaded", function() {
+  var today = new Date().toISOString().split("T")[0];
+  var now = new Date().toTimeString().slice(0,5);
+  document.querySelectorAll('input[type="date"]').forEach(function(el){ el.value = today; });
+  document.querySelectorAll('input[type="time"]').forEach(function(el){ el.value = now; });
+  document.getElementById("header-date").textContent = new Date().toLocaleDateString("en-CA", {weekday:"short", year:"numeric", month:"short", day:"numeric"});
+  document.getElementById("pin-input").addEventListener("keypress", function(e){ if(e.key === "Enter") checkLogin(); });
+});
+function checkLogin() {
+  var pin = document.getElementById("pin-input").value;
+  if (pin === PASSWORD) {
+    document.getElementById("page-login").classList.add("hidden");
+    document.getElementById("page-app").classList.remove("hidden");
+  } else {
+    document.getElementById("login-error").style.display = "block";
+    document.getElementById("pin-input").value = "";
+  }
+}
+function logout() {
+  document.getElementById("page-app").classList.add("hidden");
+  document.getElementById("page-login").classList.remove("hidden");
+  document.getElementById("pin-input").value = "";
+  document.getElementById("login-error").style.display = "none";
+}
+function showView(id) {
+  var views = document.querySelectorAll('[id^="view-"]');
+  views.forEach(function(v){ v.classList.add("hidden"); });
+  document.getElementById(id).classList.remove("hidden");
+  window.scrollTo(0,0);
+}
+function showDashboard() {
+  showView("view-dashboard");
+}
+function toggleCheck(el) {
+  el.classList.toggle("checked");
+  var box = el.querySelector(".checklist-box");
+  box.textContent = el.classList.contains("checked") ? "✓" : "";
+}
+function getCheckedItems(container) {
+  var items = container.querySelectorAll(".checklist-item.checked .checklist-text");
+  return Array.from(items).map(function(i){ return i.textContent; }).join(", ");
+}
+function submitForm(type) {
+  var data = {};
+  var sheetName = "";
+  var headers = [];
+  var row = [];
+  var timestamp = new Date().toLocaleString("en-CA");
+  if (type === "incident") {
+    sheetName = "Incidents";
+    headers = ["Timestamp","Job Number","Date","Time","Event","Location","Type","Severity","Reported By","Persons Involved","Description","Actions Taken","Outcome","Police Called","Police Report","Medical","Ejected","Follow-Up"];
+    row = [timestamp, v("inc-job"), v("inc-date"), v("inc-time"), v("inc-event"), v("inc-location"), v("inc-type"), v("inc-severity"), v("inc-reported-by"), v("inc-persons"), v("inc-description"), v("inc-actions"), v("inc-outcome"), v("inc-police"), v("inc-police-report"), v("inc-medical"), v("inc-ejected"), v("inc-followup")];
+  } else if (type === "staff") {
+    sheetName = "Staff Sign-In";
+    headers = ["Timestamp","Job Number","Event","Date","Officer Name","Company","Role","Post","Sign-In Time","Sign-Out Time"];
+    row = [timestamp, v("staff-job"), v("staff-event"), v("staff-date"), v("staff-name"), v("staff-company"), v("staff-role"), v("staff-post"), v("staff-signin-time"), v("staff-signout-time")];
+  } else if (type === "timeline") {
+    sheetName = "Event Timeline";
+    headers = ["Timestamp","Job Number","Event","Date","Time","Location","Observation","Action Taken"];
+    row = [timestamp, v("tl-job"), v("tl-event"), v("tl-date"), v("tl-time"), v("tl-location"), v("tl-observation"), v("tl-action")];
+  } else if (type === "riskassessment") {
+    sheetName = "Risk Assessments";
+    headers = ["Timestamp","Report Number","Client","Date","Event/Venue","Attendance","Risk Rating","Access Control","Crowd Flow","Emergency Response","Staffing","Recommendations","Notes"];
+    row = [timestamp, v("ra-number"), v("ra-client"), v("ra-date"), v("ra-event"), v("ra-attendance"), v("ra-rating"), v("ra-access"), v("ra-crowd"), v("ra-emergency"), v("ra-staffing"), v("ra-recommendations"), v("ra-notes")];
+  } else if (type === "debrief") {
+    sheetName = "Post-Event Debriefs";
+    headers = ["Timestamp","Report Number","Event","Date","Expected Attendance","Actual Attendance","Overall Rating","Total Incidents","Ejections","Police Called","What Went Well","Areas for Improvement","Recommendations","Consultant Notes"];
+    row = [timestamp, v("deb-number"), v("deb-event"), v("deb-date"), v("deb-expected"), v("deb-actual"), v("deb-rating"), v("deb-incidents"), v("deb-ejections"), v("deb-police"), v("deb-well"), v("deb-improve"), v("deb-recommendations"), v("deb-notes")];
+  } else if (type === "client") {
+    sheetName = "Clients";
+    headers = ["Timestamp","Name","Organization","Email","Phone","Source","Stage","Estimated Value","Event Type","Event Date","Next Action","Notes"];
+    row = [timestamp, v("cl-name"), v("cl-org"), v("cl-email"), v("cl-phone"), v("cl-source"), v("cl-stage"), v("cl-value"), v("cl-type"), v("cl-event-date"), v("cl-next-action"), v("cl-notes")];
+  } else if (type === "contactlog") {
+    sheetName = "Contact Log";
+    headers = ["Timestamp","Client/Organization","Date","Time","Method","Contact Name","Summary","Next Action"];
+    row = [timestamp, v("con-client"), v("con-date"), v("con-time"), v("con-method"), v("con-name"), v("con-summary"), v("con-next")];
+  }
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify({ sheet: sheetName, headers: headers, row: row })
+  }).then(function() {
+    var success = document.getElementById(type + "-success");
+    if (success) { success.style.display = "block"; }
+    setTimeout(function(){ showDashboard(); }, 2000);
+  }).catch(function() {
+    alert("Saved locally — check connection and try again.");
+  });
+}
+function submitChecklist(type) {
+  var timestamp = new Date().toLocaleString("en-CA");
+  var sheetName = type === "pre" ? "Pre-Event Checklists" : "Post-Event Checklists";
+  var prefix = type === "pre" ? "pre" : "post";
+  var container = document.getElementById("view-" + prefix + "-checklist");
+  var checked = getCheckedItems(container);
+  var headers = ["Timestamp","Job Number","Event","Date","Completed Items","Notes"];
+  var row = [timestamp, v(prefix + "-job"), v(prefix + "-event"), v(prefix + "-date"), checked, v(prefix + "-notes")];
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify({ sheet: sheetName, headers: headers, row: row })
+  }).then(function() {
+    var success = document.getElementById(prefix + "-success");
+    if (success) { success.style.display = "block"; }
+    setTimeout(function(){ showDashboard(); }, 2000);
+  }).catch(function() {
+    alert("Saved locally — check connection and try again.");
+  });
+}
+function v(id) {
+  var el = document.getElementById(id);
+  return el ? el.value : "";
+}
+</script>
+</body>
+</html>
