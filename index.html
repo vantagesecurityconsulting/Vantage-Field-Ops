@@ -486,7 +486,7 @@ function sendToSheets(sheetName, headers, row) {
   headers.forEach(function(h, i) {
     formData.append(h, row[i] || "");
   });
-  fetch("[formspree.io](https://formspree.io/f/xkoarezp)", {
+  fetch("[formspree.io](https:/" + "/formspree.io/f/xkoarezp)", {
     method: "POST",
     body: formData,
     headers: {"Accept": "application/json"}
