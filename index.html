@@ -432,8 +432,11 @@ body{background:#0D1117;color:#E8E4DC;font-family:'Montserrat',Arial,sans-serif;
   </div>
 </div>
 <script>
-var GS_PARTS = ["[script.google.com](https://script.google.com)","macros","s","AKfycbzC1J1gDXVMmeqC5Sv3nngRQcqNQ_-MRlDZ_mSnJzIWiH_ev2qEe90oHbnXB89eXfzImg/execg","exec"];
-var SCRIPT_URL = GS_PARTS.join("/");
+var a = "script";
+var b = "google";
+var c = "com";
+var d = "AKfycbzC1J1gDXVMmeqC5Sv3nngRQcqNQ_-MRlDZ_mSnJzIWiH_ev2qEe90oHbnXB89eXfzImg";
+var SCRIPT_URL = "https://" + a + "." + b + "." + c + "/macros/s/" + d + "/exec";
 var PASSWORD = "1507";
 document.addEventListener("DOMContentLoaded", function() {
   var today = new Date().toISOString().split("T")[0];
